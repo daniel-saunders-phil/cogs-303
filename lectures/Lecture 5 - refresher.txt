@@ -1,0 +1,56 @@
+# packages we'll need
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def simulate_bristol(a,n):
+    '''Returns a list of 0s and 1s of lengeth n
+    with 0 indicating failure and 1 indicating success.
+    
+    a = accuracy on each cup
+    n = the number of cups'''
+
+    experiment = []
+
+    for i in range(n):
+        
+        outcome = np.random.choice([1,0],p=[a,1-a])
+        experiment.append(outcome)
+        
+    return experiment
+
+def run_experiments(a,n,precision):
+    '''Returns a list containing the number of cups lady bristol
+    guessed correctly over many experiments
+    
+    a = accuracy on each cup
+    n = number of cups per experiment
+    precision = the number of experiments'''
+    
+    
+    all_trials = []
+
+    for i in range(precision):
+
+        correct = sum(simulate_bristol(a,n))
+        all_trials.append(correct)
+
+    return all_trials
+
+
+a = 0.5
+n = 8
+k = 6
+precision = 1000
+
+all_trials = run_experiments(a,n,precision)
+
+probs = []
+
+for i in range(n+1): # we'll use a range starting at zero and continuing through n+1
+
+    matches = all_trials.count(i)
+    prob = matches / precision
+    probs.append(prob)
+    
+plt.bar(range(n+1),probs);
