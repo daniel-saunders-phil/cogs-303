@@ -1,0 +1,71 @@
+def simulate_hh_bristol(a,n,h):
+    '''Returns a list of 0s and 1s of lengeth n
+    with 0 indicating failure and 1 indicating success.
+    
+    a = accuracy on the initial cup
+    n = the number of cups
+    h = the increment by which she gets better or worse'''
+
+    experiment = []
+    a_series = []
+
+    for i in range(n):
+        
+        outcome = np.random.choice([1,0],p=[a,1-a])
+        experiment.append(outcome)
+        a_series.append(a)
+
+        if outcome == 1:
+          a = a + h
+        else:
+          a = a - h
+
+        # check for ceiling
+        # / floor problems
+
+        if a < 0:
+          a = 0
+        if a > 1:
+          a = 1
+        
+        # print(a)
+        
+    return experiment, a_series
+
+
+def run_hh_experiments(a,n,precision,h):
+    '''Returns a list containing the number of cups lady bristol
+    guessed correctly over many experiments
+    
+    a = accuracy on the initial cup
+    n = number of cups per experiment
+    precision = the number of experiments
+    h = the increment by which she gets better and worse'''
+    
+    
+    all_trials = []
+
+    for i in range(precision):
+      
+        results, a_series = simulate_hh_bristol(a,n,h)
+        correct = sum(results)
+        all_trials.append(correct)
+
+    return all_trials
+
+
+def visual_experiments(a,n,precision,h):
+
+  all_trials = run_hh_experiments(a,n,precision,h)
+
+  probs = []
+
+  for i in range(n+1):
+    matches = all_trials.count(i)
+    prob = matches / precision
+    probs.append(prob)
+
+  plt.bar(range(n+1),probs)
+
+
+
